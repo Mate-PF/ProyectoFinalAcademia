@@ -7,5 +7,7 @@
     "resolveJsonModule": true,
     "noUncheckedIndexedAccess": false
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "//": "Los adaptadores Prisma se ejecutan vía tsx (dependen del cliente generado); se excluyen del typecheck por defecto.",
+  "exclude": ["src/adapters/prisma/**"]
 }

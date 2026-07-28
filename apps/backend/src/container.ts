@@ -12,16 +12,29 @@ import {
   AssignDeliverer,
   TrackOrder,
 } from "@proyecto/domain";
+import type {
+  UserRepository,
+  RestaurantRepository,
+  MenuItemRepository,
+  CartRepository,
+  OrderRepository,
+} from "@proyecto/domain";
 import { BcryptPasswordHasher } from "./adapters/BcryptPasswordHasher";
 import { JwtTokenGenerator } from "./adapters/JwtTokenGenerator";
 import { CryptoIdGenerator } from "./adapters/CryptoIdGenerator";
-import {
-  InMemoryUserRepository,
-  InMemoryRestaurantRepository,
-  InMemoryMenuItemRepository,
-  InMemoryCartRepository,
-  InMemoryOrderRepository,
-} from "./adapters/in-memory/repositories";
+
+/** Los 5 repositorios (puertos) que el backend necesita, inyectados desde afuera. */
+export interface Repositories {
+  users: UserRepository;
+  restaurants: RestaurantRepository;
+  menuItems: MenuItemRepository;
+  carts: CartRepository;
+  orders: OrderRepository;
+}
+
+export interface ContainerConfig extends Repositories {
+  jwtSecret: string;
+}
 
 export interface Container {
   tokens: JwtTokenGenerator;
@@ -42,19 +55,13 @@ export interface Container {
 }
 
 /**
- * Composition root: acá (y SOLO acá) se eligen las implementaciones concretas
- * de cada puerto y se arman los casos de uso. El resto del backend (rutas) usa
- * los casos de uso sin saber qué adaptador hay detrás.
+ * Composition root. Recibe los repositorios YA construidos (en memoria o Prisma)
+ * y arma los servicios + casos de uso. El swap de persistencia se hace afuera
+ * (en main.ts): mismos casos de uso, distinto adaptador de repositorio.
  */
-export function buildContainer(config: { jwtSecret: string }): Container {
-  // Adaptadores de persistencia (en memoria por ahora).
-  const users = new InMemoryUserRepository();
-  const restaurants = new InMemoryRestaurantRepository();
-  const menuItems = new InMemoryMenuItemRepository();
-  const carts = new InMemoryCartRepository();
-  const orders = new InMemoryOrderRepository();
+export function buildContainer(config: ContainerConfig): Container {
+  const { users, restaurants, menuItems, carts, orders } = config;
 
-  // Adaptadores de servicios.
   const hasher = new BcryptPasswordHasher();
   const tokens = new JwtTokenGenerator(config.jwtSecret);
   const ids = new CryptoIdGenerator();

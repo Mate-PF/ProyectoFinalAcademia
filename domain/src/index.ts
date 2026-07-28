@@ -8,3 +8,6 @@ export { Address, type AddressProps } from "./value-objects/Address";
 // Entities
 export { Order, type OrderStatus, type OrderProps } from "./entities/Order";
 export { OrderItem, type OrderItemProps } from "./entities/OrderItem";
+export { User, type UserRole, type UserProps } from "./entities/User";
+export { Restaurant, type RestaurantProps } from "./entities/Restaurant";
+export { MenuItem, type MenuItemProps } from "./entities/MenuItem";

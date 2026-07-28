@@ -13,6 +13,11 @@
     "lint": "eslint .",
     "check": "pnpm run typecheck && pnpm run lint && pnpm run test"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  },
   "devDependencies": {
     "@eslint/js": "^9.15.0",
     "@types/node": "^22.9.0",

@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { Cart } from "./Cart";
+import { CartItem } from "./CartItem";
 import { MenuItem, type MenuItemProps } from "./MenuItem";
 import { Money } from "../value-objects/Money";
 
@@ -113,5 +114,28 @@ describe("Cart", () => {
     it("no permite checkout de un carrito vacío", () => {
       expect(() => makeCart().checkout("o1")).toThrow();
     });
+  });
+});
+
+describe("Cart.rehydrate (reconstitución desde persistencia)", () => {
+  function lineOf(quantity: number): CartItem {
+    return CartItem.create(
+      MenuItem.create({ id: "a", restaurantId: "r-1", name: "Pizza", price: Money.fromDecimal(10, "ARS") }),
+      quantity,
+    );
+  }
+
+  it("reconstruye un carrito con sus líneas y total", () => {
+    const cart = Cart.rehydrate({ id: "cart-1", customerId: "c1", restaurantId: "r-1" }, [lineOf(2)]);
+    expect(cart.isEmpty()).toBe(false);
+    expect(cart.items).toHaveLength(1);
+    expect(cart.total().equals(Money.fromDecimal(20, "ARS"))).toBe(true);
+  });
+
+  it("el carrito reconstruido sigue operando: checkout produce un pedido PENDIENTE", () => {
+    const cart = Cart.rehydrate({ id: "cart-1", customerId: "c1", restaurantId: "r-1" }, [lineOf(1)]);
+    const order = cart.checkout("o-1");
+    expect(order.status).toBe("PENDIENTE");
+    expect(order.total().equals(Money.fromDecimal(10, "ARS"))).toBe(true);
   });
 });

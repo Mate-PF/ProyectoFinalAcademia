@@ -32,6 +32,12 @@ export interface OrderProps {
   items: OrderItem[];
 }
 
+/** Estado persistido de un pedido, para reconstruirlo desde un repositorio. */
+export interface OrderSnapshot extends OrderProps {
+  status: OrderStatus;
+  delivererId: string | null;
+}
+
 /**
  * Pedido (entidad con identidad: `id`).
  *
@@ -61,6 +67,19 @@ export class Order {
       throw new Error("Un pedido requiere al menos un ítem");
     }
     return new Order(props);
+  }
+
+  /**
+   * Reconstruye un pedido desde su estado persistido (repositorio), SIN pasar
+   * por la máquina de estados: un pedido guardado ya puede estar ENTREGADO o
+   * CANCELADO, estados a los que no se llega con `create`. No revalida
+   * invariantes: se confía en lo que la base guardó (patrón de reconstitución).
+   */
+  static rehydrate(snapshot: OrderSnapshot): Order {
+    const order = new Order(snapshot);
+    order._status = snapshot.status;
+    order._delivererId = snapshot.delivererId;
+    return order;
   }
 
   get status(): OrderStatus {

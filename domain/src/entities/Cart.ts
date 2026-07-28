@@ -32,6 +32,16 @@ export class Cart {
     this.restaurantId = props.restaurantId;
   }
 
+  /**
+   * Reconstruye un carrito desde su estado persistido, con sus líneas ya
+   * cargadas (cada CartItem referencia su MenuItem recuperado por el repositorio).
+   */
+  static rehydrate(props: CartProps, items: CartItem[]): Cart {
+    const cart = new Cart(props);
+    cart._items = [...items];
+    return cart;
+  }
+
   static create(props: CartProps): Cart {
     if (props.id.trim().length === 0) {
       throw new Error("El carrito requiere un id");

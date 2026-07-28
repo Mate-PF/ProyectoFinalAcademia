@@ -155,3 +155,49 @@ describe("Order", () => {
     });
   });
 });
+
+describe("Order.rehydrate (reconstitución desde persistencia)", () => {
+  const item = OrderItem.create({
+    menuItemId: "m1",
+    name: "Pizza",
+    unitPrice: Money.fromDecimal(10, "ARS"),
+    quantity: 2,
+  });
+
+  it("reconstruye un pedido en un estado no inicial (ENTREGADO) con repartidor", () => {
+    const order = Order.rehydrate({
+      id: "o1",
+      customerId: "c1",
+      restaurantId: "r1",
+      items: [item],
+      status: "ENTREGADO",
+      delivererId: "rep-9",
+    });
+    expect(order.status).toBe("ENTREGADO");
+    expect(order.delivererId).toBe("rep-9");
+    expect(order.total().equals(Money.fromDecimal(20, "ARS"))).toBe(true);
+  });
+
+  it("el pedido reconstruido sigue respetando la máquina de estados", () => {
+    const confirmado = Order.rehydrate({
+      id: "o1",
+      customerId: "c1",
+      restaurantId: "r1",
+      items: [item],
+      status: "CONFIRMADO",
+      delivererId: null,
+    });
+    confirmado.startPreparing();
+    expect(confirmado.status).toBe("EN_PREPARACION");
+
+    const entregado = Order.rehydrate({
+      id: "o2",
+      customerId: "c1",
+      restaurantId: "r1",
+      items: [item],
+      status: "ENTREGADO",
+      delivererId: null,
+    });
+    expect(() => entregado.cancel()).toThrow(); // terminal: no admite transiciones
+  });
+});

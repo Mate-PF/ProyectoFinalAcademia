@@ -11,7 +11,7 @@ export { Restaurant, type RestaurantProps } from "./entities/Restaurant";
 export { MenuItem, type MenuItemProps } from "./entities/MenuItem";
 export { Cart, type CartProps } from "./entities/Cart";
 export { CartItem } from "./entities/CartItem";
-export { Order, type OrderStatus, type OrderProps } from "./entities/Order";
+export { Order, type OrderStatus, type OrderProps, type OrderSnapshot } from "./entities/Order";
 export { OrderItem, type OrderItemProps } from "./entities/OrderItem";
 
 // Ports (services) — el dominio define las interfaces; la infraestructura las implementa.

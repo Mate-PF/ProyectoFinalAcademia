@@ -59,6 +59,33 @@ export interface OrderTrackingDTO {
   delivererId: string | null;
 }
 
+export type OrderStatus =
+  | "PENDIENTE"
+  | "CONFIRMADO"
+  | "EN_PREPARACION"
+  | "EN_CAMINO"
+  | "ENTREGADO"
+  | "CANCELADO";
+
+export type OrderAction = "CONFIRM" | "START_PREPARING" | "DISPATCH" | "DELIVER" | "CANCEL";
+
+export interface OrderLine {
+  menuItemId: string;
+  name: string;
+  unitPrice: Money;
+  quantity: number;
+}
+
+export interface OrderDTO {
+  id: string;
+  customerId: string;
+  restaurantId: string;
+  status: OrderStatus;
+  delivererId: string | null;
+  total: Money;
+  items: OrderLine[];
+}
+
 interface RequestOptions extends RequestInit {
   token?: string;
 }
@@ -129,5 +156,21 @@ export const api = {
   },
   trackOrder(token: string, orderId: string): Promise<OrderTrackingDTO> {
     return request(`/api/orders/${orderId}`, { token });
+  },
+  myOrders(token: string): Promise<OrderDTO[]> {
+    return request("/api/orders", { token });
+  },
+  restaurantOrders(token: string, restaurantId: string): Promise<OrderDTO[]> {
+    return request(`/api/restaurants/${restaurantId}/orders`, { token });
+  },
+  deliveries(token: string): Promise<OrderDTO[]> {
+    return request("/api/deliveries", { token });
+  },
+  changeOrderStatus(token: string, orderId: string, action: OrderAction): Promise<OrderDTO> {
+    return request(`/api/orders/${orderId}/status`, {
+      method: "PATCH",
+      token,
+      body: JSON.stringify({ action }),
+    });
   },
 };

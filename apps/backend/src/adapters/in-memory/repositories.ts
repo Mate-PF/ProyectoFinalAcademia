@@ -1,3 +1,4 @@
+import type { UserRole } from "@proyecto/domain";
 import type {
   User,
   Restaurant,
@@ -35,6 +36,10 @@ export class InMemoryUserRepository implements UserRepository {
 
   async findById(id: string): Promise<User | null> {
     return this.byId.get(id) ?? null;
+  }
+
+  async findByRole(role: UserRole): Promise<User[]> {
+    return [...this.byId.values()].filter((user) => user.role === role);
   }
 }
 

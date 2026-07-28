@@ -182,4 +182,14 @@ export const api = {
       body: JSON.stringify({ action }),
     });
   },
+  listDeliverers(token: string): Promise<AuthUser[]> {
+    return request("/api/deliverers", { token });
+  },
+  assignDeliverer(token: string, orderId: string, delivererId: string): Promise<OrderDTO> {
+    return request(`/api/orders/${orderId}/deliverer`, {
+      method: "PATCH",
+      token,
+      body: JSON.stringify({ delivererId }),
+    });
+  },
 };

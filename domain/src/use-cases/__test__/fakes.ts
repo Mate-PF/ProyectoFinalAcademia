@@ -1,4 +1,4 @@
-import type { User } from "../../entities/User";
+import type { User, UserRole } from "../../entities/User";
 import type { Restaurant } from "../../entities/Restaurant";
 import type { MenuItem } from "../../entities/MenuItem";
 import type { Cart } from "../../entities/Cart";
@@ -32,6 +32,10 @@ export class InMemoryUserRepository implements UserRepository {
 
   async findById(id: string): Promise<User | null> {
     return this.byId.get(id) ?? null;
+  }
+
+  async findByRole(role: UserRole): Promise<User[]> {
+    return [...this.byId.values()].filter((user) => user.role === role);
   }
 }
 

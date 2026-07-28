@@ -26,6 +26,11 @@ export class PrismaUserRepository implements UserRepository {
     const row = await prisma.user.findUnique({ where: { id } });
     return row ? toDomain(row) : null;
   }
+
+  async findByRole(role) {
+    const rows = await prisma.user.findMany({ where: { role } });
+    return rows.map(toDomain);
+  }
 }
 
 function toDomain(row) {

@@ -2,7 +2,7 @@ import { Router } from "express";
 import type { Container } from "../../container";
 import { asyncHandler } from "../middleware/asyncHandler";
 import { requireAuth } from "../middleware/requireAuth";
-import { orderToJson, moneyToJson } from "../presenters";
+import { orderToJson, moneyToJson, userToJson } from "../presenters";
 
 export function orderRoutes(container: Container): Router {
   const router = Router();
@@ -73,6 +73,20 @@ export function orderRoutes(container: Container): Router {
       }
       const orders = await useCases.listMyOrders.execute({ customerId: auth.userId });
       res.json(orders.map(orderToJson));
+    }),
+  );
+
+  // Listar repartidores (solo ADMIN: lo valida el caso de uso). Para asignar.
+  router.get(
+    "/deliverers",
+    asyncHandler(async (req, res) => {
+      const auth = req.auth;
+      if (auth === undefined) {
+        res.status(401).json({ error: "No autenticado" });
+        return;
+      }
+      const deliverers = await useCases.listDeliverers.execute({ actorRole: auth.role });
+      res.json(deliverers.map(userToJson));
     }),
   );
 

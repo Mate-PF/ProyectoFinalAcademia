@@ -34,6 +34,7 @@ export { ListRestaurants } from "./use-cases/ListRestaurants";
 export { ListMyOrders, type ListMyOrdersInput } from "./use-cases/ListMyOrders";
 export { ListRestaurantOrders, type ListRestaurantOrdersInput } from "./use-cases/ListRestaurantOrders";
 export { ListDeliveries, type ListDeliveriesInput } from "./use-cases/ListDeliveries";
+export { ListDeliverers, type ListDeliverersInput } from "./use-cases/ListDeliverers";
 export { AddToCart, type AddToCartInput } from "./use-cases/AddToCart";
 export { RemoveFromCart, type RemoveFromCartInput } from "./use-cases/RemoveFromCart";
 export { ViewCart, type CartView } from "./use-cases/ViewCart";

@@ -8,6 +8,7 @@ import {
   ListMyOrders,
   ListRestaurantOrders,
   ListDeliveries,
+  ListDeliverers,
   AddToCart,
   RemoveFromCart,
   ViewCart,
@@ -52,6 +53,7 @@ export interface Container {
     listMyOrders: ListMyOrders;
     listRestaurantOrders: ListRestaurantOrders;
     listDeliveries: ListDeliveries;
+    listDeliverers: ListDeliverers;
     addToCart: AddToCart;
     removeFromCart: RemoveFromCart;
     viewCart: ViewCart;
@@ -86,6 +88,7 @@ export function buildContainer(config: ContainerConfig): Container {
       listMyOrders: new ListMyOrders(orders),
       listRestaurantOrders: new ListRestaurantOrders(restaurants, orders),
       listDeliveries: new ListDeliveries(orders),
+      listDeliverers: new ListDeliverers(users),
       addToCart: new AddToCart(carts, menuItems, ids),
       removeFromCart: new RemoveFromCart(carts),
       viewCart: new ViewCart(carts),

@@ -1,10 +1,12 @@
 import type { User } from "../../entities/User";
 import type { Restaurant } from "../../entities/Restaurant";
 import type { MenuItem } from "../../entities/MenuItem";
+import type { Cart } from "../../entities/Cart";
 import type { Email } from "../../value-objects/Email";
 import type { UserRepository } from "../../services/UserRepository";
 import type { RestaurantRepository } from "../../services/RestaurantRepository";
 import type { MenuItemRepository } from "../../services/MenuItemRepository";
+import type { CartRepository } from "../../services/CartRepository";
 import type { PasswordHasher } from "../../services/PasswordHasher";
 import type { IdGenerator } from "../../services/IdGenerator";
 import type { AuthTokenPayload, TokenGenerator } from "../../services/TokenGenerator";
@@ -58,6 +60,19 @@ export class InMemoryMenuItemRepository implements MenuItemRepository {
 
   async findByRestaurant(restaurantId: string): Promise<MenuItem[]> {
     return [...this.byId.values()].filter((item) => item.restaurantId === restaurantId);
+  }
+}
+
+/** Repositorio de carritos en memoria (fake): un carrito por cliente. */
+export class InMemoryCartRepository implements CartRepository {
+  private readonly byCustomer = new Map<string, Cart>();
+
+  async save(cart: Cart): Promise<void> {
+    this.byCustomer.set(cart.customerId, cart);
+  }
+
+  async findByCustomer(customerId: string): Promise<Cart | null> {
+    return this.byCustomer.get(customerId) ?? null;
   }
 }
 

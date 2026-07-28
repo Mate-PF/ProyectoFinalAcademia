@@ -21,6 +21,7 @@ export type { TokenGenerator, AuthTokenPayload } from "./services/TokenGenerator
 export type { UserRepository } from "./services/UserRepository";
 export type { RestaurantRepository } from "./services/RestaurantRepository";
 export type { MenuItemRepository } from "./services/MenuItemRepository";
+export type { CartRepository } from "./services/CartRepository";
 
 // Use cases
 export { RegisterUser, type RegisterUserInput } from "./use-cases/RegisterUser";
@@ -28,3 +29,6 @@ export { LoginUser, type LoginUserInput, type LoginUserResult } from "./use-case
 export { CreateRestaurant, type CreateRestaurantInput } from "./use-cases/CreateRestaurant";
 export { AddMenuItem, type AddMenuItemInput } from "./use-cases/AddMenuItem";
 export { ListMenu, type ListMenuInput } from "./use-cases/ListMenu";
+export { AddToCart, type AddToCartInput } from "./use-cases/AddToCart";
+export { RemoveFromCart, type RemoveFromCartInput } from "./use-cases/RemoveFromCart";
+export { ViewCart, type CartView } from "./use-cases/ViewCart";

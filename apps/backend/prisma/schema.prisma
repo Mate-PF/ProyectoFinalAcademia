@@ -1,0 +1,94 @@
+// Modelo relacional que espeja el dominio. El dinero se guarda en centavos
+// (Int) + moneda; la dirección se embebe como columnas en Restaurant; los
+// value objects se reconstruyen en los adaptadores (Money.fromCents, etc.).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CLIENTE
+  REPARTIDOR
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDIENTE
+  CONFIRMADO
+  EN_PREPARACION
+  EN_CAMINO
+  ENTREGADO
+  CANCELADO
+}
+
+model User {
+  id           String @id
+  name         String
+  email        String @unique
+  role         Role
+  passwordHash String
+}
+
+model Restaurant {
+  id         String @id
+  name       String
+  ownerId    String
+  // Address embebida
+  street     String
+  number     String
+  city       String
+  postalCode String
+}
+
+model MenuItem {
+  id           String     @id
+  restaurantId String
+  name         String
+  priceCents   Int
+  currency     String
+  available    Boolean    @default(true)
+  cartItems    CartItem[]
+}
+
+model Cart {
+  id           String     @id
+  customerId   String     @unique // un carrito activo por cliente
+  restaurantId String
+  items        CartItem[]
+}
+
+model CartItem {
+  id         String   @id @default(uuid())
+  cartId     String
+  cart       Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  menuItemId String
+  menuItem   MenuItem @relation(fields: [menuItemId], references: [id])
+  quantity   Int
+}
+
+model Order {
+  id           String      @id
+  customerId   String
+  restaurantId String
+  status       OrderStatus
+  delivererId  String?
+  createdAt    DateTime    @default(now())
+  items        OrderItem[]
+}
+
+model OrderItem {
+  id             String @id @default(uuid())
+  orderId        String
+  order          Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  // Snapshot del ítem al momento de la compra
+  menuItemId     String
+  name           String
+  unitPriceCents Int
+  currency       String
+  quantity       Int
+}

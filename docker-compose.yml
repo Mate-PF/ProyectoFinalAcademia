@@ -1,0 +1,23 @@
+# Postgres para desarrollo/entrega. Levantar con: docker compose up -d
+# El backend se conecta vía DATABASE_URL (ver apps/backend/.env.example).
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: pedidos-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: pedidos
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d pedidos"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:

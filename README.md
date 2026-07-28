@@ -63,3 +63,25 @@ Endpoints iniciales (auth):
 - `POST /api/auth/register`  → `{ name, email, password, role }`
 - `POST /api/auth/login`     → `{ email, password }` → `{ token, user }`
 - `GET  /api/auth/me`        → requiere `Authorization: Bearer <token>`
+
+## Base de datos (Docker + Prisma) — entrega 3
+
+Postgres se levanta con Docker; el backend puede persistir en memoria (default)
+o en Postgres vía Prisma (toggle `PERSISTENCE`).
+
+Setup (una vez):
+```bash
+docker compose up -d                              # Postgres en :5432
+cd apps/backend && cp .env.example .env           # ajustá DATABASE_URL/JWT_SECRET
+pnpm --filter @proyecto/backend prisma:generate   # genera el cliente Prisma
+pnpm --filter @proyecto/backend prisma:migrate    # crea las tablas (migración inicial)
+```
+Correr el backend contra Postgres:
+```bash
+PERSISTENCE=prisma pnpm --filter @proyecto/backend dev
+```
+> Nota: el `schema.prisma` espeja el dominio (dinero en centavos + moneda,
+> dirección embebida). Los adaptadores Prisma reconstruyen los value objects y
+> usan `Order.rehydrate`/`Cart.rehydrate` al leer. **El dominio y los casos de
+> uso NO cambian**: solo se enchufa otro adaptador — ese es el pago de la
+> arquitectura limpia.

@@ -28,34 +28,34 @@ export function RestaurantForm({ onSubmit, error, loading = false }: RestaurantF
   }
 
   return (
-    <form onSubmit={handleSubmit} aria-label="Crear restaurante" className="space-y-4 rounded-2xl bg-white p-6 shadow-sm">
-      <h3 className="text-lg font-bold text-neutral-900">Crear restaurante</h3>
+    <form onSubmit={handleSubmit} aria-label="Crear restaurante" className="space-y-4 rounded-2xl bg-surface p-6 shadow-sm">
+      <h3 className="text-lg font-bold text-fg">Crear restaurante</h3>
       <label className="block space-y-1.5">
-        <span className="text-sm font-medium text-neutral-700">Nombre</span>
+        <span className="text-sm font-medium text-fg">Nombre</span>
         <input value={name} onChange={(e) => setName(e.target.value)} className={inputClass} />
       </label>
       <div className="grid grid-cols-2 gap-3">
         <label className="block space-y-1.5">
-          <span className="text-sm font-medium text-neutral-700">Calle</span>
+          <span className="text-sm font-medium text-fg">Calle</span>
           <input value={street} onChange={(e) => setStreet(e.target.value)} className={inputClass} />
         </label>
         <label className="block space-y-1.5">
-          <span className="text-sm font-medium text-neutral-700">Número</span>
+          <span className="text-sm font-medium text-fg">Número</span>
           <input value={number} onChange={(e) => setNumber(e.target.value)} className={inputClass} />
         </label>
       </div>
       <div className="grid grid-cols-2 gap-3">
         <label className="block space-y-1.5">
-          <span className="text-sm font-medium text-neutral-700">Ciudad</span>
+          <span className="text-sm font-medium text-fg">Ciudad</span>
           <input value={city} onChange={(e) => setCity(e.target.value)} className={inputClass} />
         </label>
         <label className="block space-y-1.5">
-          <span className="text-sm font-medium text-neutral-700">Código postal</span>
+          <span className="text-sm font-medium text-fg">Código postal</span>
           <input value={postalCode} onChange={(e) => setPostalCode(e.target.value)} className={inputClass} />
         </label>
       </div>
       {error !== undefined && (
-        <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p role="alert" className="rounded-lg bg-red-50 dark:bg-red-500/10 px-3 py-2 text-sm text-red-700 dark:text-red-300">
           {error}
         </p>
       )}

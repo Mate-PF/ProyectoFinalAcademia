@@ -36,9 +36,9 @@ export function DeliveriesPage() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold text-neutral-900">Mis entregas</h2>
+      <h2 className="text-2xl font-bold text-fg">Mis entregas</h2>
       {error !== undefined && (
-        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
+        <p className="rounded-lg bg-red-50 dark:bg-red-500/10 px-3 py-2 text-sm text-red-700 dark:text-red-300">{error}</p>
       )}
       <OrderList
         orders={orders}
@@ -49,7 +49,7 @@ export function DeliveriesPage() {
             <button
               type="button"
               onClick={() => void markDelivered(order.id)}
-              className="rounded-lg bg-brand px-3 py-1 text-sm font-semibold text-white transition hover:bg-brand-dark"
+              className="rounded-lg bg-accent px-3 py-1 text-sm font-semibold text-accent-fg transition hover:bg-accent-hover"
             >
               Marcar entregado
             </button>

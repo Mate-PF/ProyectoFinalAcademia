@@ -25,9 +25,9 @@ export function RegisterPage() {
   return (
     <div className="mx-auto max-w-md">
       <RegisterForm onSubmit={handle} error={error} loading={loading} />
-      <p className="mt-4 text-center text-sm text-neutral-600">
+      <p className="mt-4 text-center text-sm text-muted">
         ¿Ya tenés cuenta?{" "}
-        <Link to="/login" className="font-semibold text-brand hover:underline">
+        <Link to="/login" className="font-semibold text-accent hover:underline">
           Iniciá sesión
         </Link>
       </p>

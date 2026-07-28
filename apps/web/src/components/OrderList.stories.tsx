@@ -12,6 +12,6 @@ export default meta;
 type Story = StoryObj<typeof OrderList>;
 export const ConPedidos: Story = { args: { orders } };
 export const ConAcciones: Story = {
-  args: { orders, renderActions: () => <button type="button" className="rounded-lg bg-brand px-3 py-1 text-sm font-semibold text-white">Confirmar</button> },
+  args: { orders, renderActions: () => <button type="button" className="rounded-lg bg-accent px-3 py-1 text-sm font-semibold text-accent-fg">Confirmar</button> },
 };
 export const Vacio: Story = { args: { orders: [] } };

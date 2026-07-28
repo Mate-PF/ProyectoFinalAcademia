@@ -140,21 +140,21 @@ export function AdminPage() {
   }
 
   if (loading) {
-    return <p className="py-8 text-center text-neutral-500">Cargando…</p>;
+    return <p className="py-8 text-center text-muted">Cargando…</p>;
   }
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-neutral-900">Administrar restaurante</h2>
-      {error !== undefined && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
+      <h2 className="text-2xl font-bold text-fg">Administrar restaurante</h2>
+      {error !== undefined && <p className="rounded-lg bg-red-50 dark:bg-red-500/10 px-3 py-2 text-sm text-red-700 dark:text-red-300">{error}</p>}
       {restaurant === null ? (
         <RestaurantForm onSubmit={handleCreateRestaurant} loading={saving} />
       ) : (
         <>
-          <div className="rounded-2xl bg-white p-6 shadow-sm">
-            <p className="text-sm text-neutral-500">Tu restaurante</p>
-            <p className="text-lg font-bold text-neutral-900">{restaurant.name}</p>
-            <p className="text-sm text-neutral-500">
+          <div className="rounded-2xl bg-surface p-6 shadow-sm">
+            <p className="text-sm text-muted">Tu restaurante</p>
+            <p className="text-lg font-bold text-fg">{restaurant.name}</p>
+            <p className="text-sm text-muted">
               {restaurant.address.street} {restaurant.address.number}, {restaurant.address.city}
             </p>
           </div>
@@ -162,12 +162,12 @@ export function AdminPage() {
           <MenuItemForm onSubmit={handleAddItem} loading={saving} />
 
           <div>
-            <h3 className="mb-3 text-lg font-bold text-neutral-900">Menú actual</h3>
+            <h3 className="mb-3 text-lg font-bold text-fg">Menú actual</h3>
             <MenuList items={menu} emptyMessage="Todavía no cargaste ítems" />
           </div>
 
           <div>
-            <h3 className="mb-3 text-lg font-bold text-neutral-900">Pedidos</h3>
+            <h3 className="mb-3 text-lg font-bold text-fg">Pedidos</h3>
             <OrderList
               orders={orders}
               emptyMessage="Todavía no hay pedidos"
@@ -178,7 +178,7 @@ export function AdminPage() {
                       key={a.action}
                       type="button"
                       onClick={() => void handleOrderAction(order.id, a.action)}
-                      className="rounded-lg bg-brand px-3 py-1 text-sm font-semibold text-white transition hover:bg-brand-dark"
+                      className="rounded-lg bg-accent px-3 py-1 text-sm font-semibold text-accent-fg transition hover:bg-accent-hover"
                     >
                       {a.label}
                     </button>
@@ -189,7 +189,7 @@ export function AdminPage() {
                       onChange={(e) => {
                         if (e.target.value !== "") void handleAssign(order.id, e.target.value);
                       }}
-                      className="rounded-lg border border-neutral-300 px-2 py-1 text-sm"
+                      className="rounded-lg border border-border px-2 py-1 text-sm"
                     >
                       <option value="" disabled>
                         Asignar repartidor…
@@ -202,7 +202,7 @@ export function AdminPage() {
                     </select>
                   )}
                   {order.delivererId !== null && (
-                    <span className="self-center text-xs text-neutral-500">Repartidor asignado</span>
+                    <span className="self-center text-xs text-muted">Repartidor asignado</span>
                   )}
                 </>
               )}

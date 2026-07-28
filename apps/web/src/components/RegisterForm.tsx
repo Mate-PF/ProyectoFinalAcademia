@@ -27,26 +27,26 @@ export function RegisterForm({ onSubmit, error, loading = false }: RegisterFormP
   }
 
   return (
-    <form onSubmit={handleSubmit} aria-label="Crear cuenta" className="space-y-5 rounded-2xl bg-white p-8 shadow-sm">
-      <h2 className="text-2xl font-bold text-neutral-900">Crear cuenta</h2>
+    <form onSubmit={handleSubmit} aria-label="Crear cuenta" className="space-y-5 rounded-2xl bg-surface p-8 shadow-sm">
+      <h2 className="text-2xl font-bold text-fg">Crear cuenta</h2>
 
       <label className="block space-y-1.5">
-        <span className="text-sm font-medium text-neutral-700">Nombre</span>
+        <span className="text-sm font-medium text-fg">Nombre</span>
         <input value={name} onChange={(e) => setName(e.target.value)} className={inputClass} />
       </label>
 
       <label className="block space-y-1.5">
-        <span className="text-sm font-medium text-neutral-700">Email</span>
+        <span className="text-sm font-medium text-fg">Email</span>
         <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} />
       </label>
 
       <label className="block space-y-1.5">
-        <span className="text-sm font-medium text-neutral-700">Contraseña</span>
+        <span className="text-sm font-medium text-fg">Contraseña</span>
         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className={inputClass} />
       </label>
 
       <label className="block space-y-1.5">
-        <span className="text-sm font-medium text-neutral-700">Rol</span>
+        <span className="text-sm font-medium text-fg">Rol</span>
         <select value={role} onChange={(e) => setRole(e.target.value as Role)} className={inputClass}>
           {ROLES.map((r) => (
             <option key={r.value} value={r.value}>
@@ -57,7 +57,7 @@ export function RegisterForm({ onSubmit, error, loading = false }: RegisterFormP
       </label>
 
       {error !== undefined && (
-        <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p role="alert" className="rounded-lg bg-red-50 dark:bg-red-500/10 px-3 py-2 text-sm text-red-700 dark:text-red-300">
           {error}
         </p>
       )}

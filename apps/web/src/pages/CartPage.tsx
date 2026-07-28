@@ -20,9 +20,9 @@ export function CartPage() {
 
   return (
     <div className="mx-auto max-w-lg space-y-4">
-      <h2 className="text-2xl font-bold text-neutral-900">Tu carrito</h2>
+      <h2 className="text-2xl font-bold text-fg">Tu carrito</h2>
       {error !== undefined && (
-        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
+        <p className="rounded-lg bg-red-50 dark:bg-red-500/10 px-3 py-2 text-sm text-red-700 dark:text-red-300">{error}</p>
       )}
       <Cart
         items={items}

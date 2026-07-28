@@ -27,13 +27,13 @@ export function MyOrdersPage() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold text-neutral-900">Mis pedidos</h2>
+      <h2 className="text-2xl font-bold text-fg">Mis pedidos</h2>
       <OrderList
         orders={orders}
         loading={loading}
         emptyMessage="Todavía no hiciste ningún pedido"
         renderActions={(order) => (
-          <Link to={`/orders/${order.id}`} className="text-sm font-semibold text-brand hover:underline">
+          <Link to={`/orders/${order.id}`} className="text-sm font-semibold text-accent hover:underline">
             Ver seguimiento →
           </Link>
         )}

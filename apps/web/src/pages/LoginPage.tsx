@@ -25,9 +25,9 @@ export function LoginPage() {
   return (
     <div className="mx-auto max-w-md">
       <LoginForm onSubmit={handle} error={error} loading={loading} />
-      <p className="mt-4 text-center text-sm text-neutral-600">
+      <p className="mt-4 text-center text-sm text-muted">
         ¿No tenés cuenta?{" "}
-        <Link to="/register" className="font-semibold text-brand hover:underline">
+        <Link to="/register" className="font-semibold text-accent hover:underline">
           Registrate
         </Link>
       </p>

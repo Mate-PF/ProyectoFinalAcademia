@@ -22,15 +22,15 @@ export function MenuItemForm({ onSubmit, error, loading = false }: MenuItemFormP
   }
 
   return (
-    <form onSubmit={handleSubmit} aria-label="Agregar ítem al menú" className="space-y-4 rounded-2xl bg-white p-6 shadow-sm">
-      <h3 className="text-lg font-bold text-neutral-900">Agregar ítem al menú</h3>
+    <form onSubmit={handleSubmit} aria-label="Agregar ítem al menú" className="space-y-4 rounded-2xl bg-surface p-6 shadow-sm">
+      <h3 className="text-lg font-bold text-fg">Agregar ítem al menú</h3>
       <div className="grid grid-cols-[1fr_auto] gap-3">
         <label className="block space-y-1.5">
-          <span className="text-sm font-medium text-neutral-700">Nombre</span>
+          <span className="text-sm font-medium text-fg">Nombre</span>
           <input value={name} onChange={(e) => setName(e.target.value)} className={inputClass} />
         </label>
         <label className="block space-y-1.5">
-          <span className="text-sm font-medium text-neutral-700">Precio (ARS)</span>
+          <span className="text-sm font-medium text-fg">Precio (ARS)</span>
           <input
             type="number"
             min="0"
@@ -41,7 +41,7 @@ export function MenuItemForm({ onSubmit, error, loading = false }: MenuItemFormP
         </label>
       </div>
       {error !== undefined && (
-        <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p role="alert" className="rounded-lg bg-red-50 dark:bg-red-500/10 px-3 py-2 text-sm text-red-700 dark:text-red-300">
           {error}
         </p>
       )}

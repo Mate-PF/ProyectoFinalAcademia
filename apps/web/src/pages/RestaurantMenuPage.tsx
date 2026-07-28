@@ -35,9 +35,9 @@ export function RestaurantMenuPage() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold text-neutral-900">Menú</h2>
+      <h2 className="text-2xl font-bold text-fg">Menú</h2>
       {notice !== undefined && (
-        <p className="rounded-lg bg-green-50 px-3 py-2 text-sm text-green-700">{notice}</p>
+        <p className="rounded-lg bg-green-50 dark:bg-green-500/10 px-3 py-2 text-sm text-green-700 dark:text-green-300">{notice}</p>
       )}
       <MenuList
         items={menu}

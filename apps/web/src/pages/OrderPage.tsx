@@ -23,17 +23,17 @@ export function OrderPage() {
     void load();
   }, [load]);
 
-  if (error !== undefined) return <p className="py-8 text-center text-red-600">{error}</p>;
-  if (tracking === null) return <p className="py-8 text-center text-neutral-500">Cargando pedido…</p>;
+  if (error !== undefined) return <p className="py-8 text-center text-red-600 dark:text-red-400">{error}</p>;
+  if (tracking === null) return <p className="py-8 text-center text-muted">Cargando pedido…</p>;
 
   return (
     <div className="mx-auto max-w-lg space-y-4">
-      <h2 className="text-2xl font-bold text-neutral-900">Tu pedido</h2>
+      <h2 className="text-2xl font-bold text-fg">Tu pedido</h2>
       <OrderTracking tracking={tracking} />
       <button
         type="button"
         onClick={() => void load()}
-        className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-2 font-medium text-neutral-700 transition hover:bg-neutral-50"
+        className="w-full rounded-lg border border-border bg-surface px-4 py-2 font-medium text-fg transition hover:bg-bg"
       >
         Actualizar estado
       </button>

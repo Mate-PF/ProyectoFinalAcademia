@@ -1,0 +1,10 @@
+packages:
+  - "domain"
+  - "apps/*"
+
+allowBuilds:
+  esbuild: set this to true or false
+
+# Permite que esbuild (dependencia de vitest) corra su build script.
+onlyBuiltDependencies:
+  - esbuild

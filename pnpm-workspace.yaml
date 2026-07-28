@@ -2,6 +2,12 @@ packages:
   - "domain"
   - "apps/*"
 
+allowBuilds:
+  '@prisma/client': true
+  '@prisma/engines': true
+  esbuild: true
+  prisma: true
+
 # Permite que esbuild (dependencia de vitest) corra su build script.
 onlyBuiltDependencies:
   - esbuild

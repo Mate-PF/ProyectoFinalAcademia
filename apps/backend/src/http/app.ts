@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import type { Container } from "../container";
 import { authRoutes } from "./routes/auth";
 import { restaurantRoutes } from "./routes/restaurants";
@@ -9,6 +10,7 @@ import { errorHandler } from "./middleware/errorHandler";
 /** Arma la app Express montando las rutas sobre el container de casos de uso. */
 export function createApp(container: Container): express.Express {
   const app = express();
+  app.use(cors()); // permite el consumo desde el frontend (Vite en :5173)
   app.use(express.json());
 
   app.get("/health", (_req, res) => {

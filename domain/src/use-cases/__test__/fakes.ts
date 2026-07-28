@@ -1,6 +1,10 @@
 import type { User } from "../../entities/User";
+import type { Restaurant } from "../../entities/Restaurant";
+import type { MenuItem } from "../../entities/MenuItem";
 import type { Email } from "../../value-objects/Email";
 import type { UserRepository } from "../../services/UserRepository";
+import type { RestaurantRepository } from "../../services/RestaurantRepository";
+import type { MenuItemRepository } from "../../services/MenuItemRepository";
 import type { PasswordHasher } from "../../services/PasswordHasher";
 import type { IdGenerator } from "../../services/IdGenerator";
 import type { AuthTokenPayload, TokenGenerator } from "../../services/TokenGenerator";
@@ -24,6 +28,36 @@ export class InMemoryUserRepository implements UserRepository {
 
   async findById(id: string): Promise<User | null> {
     return this.byId.get(id) ?? null;
+  }
+}
+
+/** Repositorio de restaurantes en memoria (fake). */
+export class InMemoryRestaurantRepository implements RestaurantRepository {
+  private readonly byId = new Map<string, Restaurant>();
+
+  async save(restaurant: Restaurant): Promise<void> {
+    this.byId.set(restaurant.id, restaurant);
+  }
+
+  async findById(id: string): Promise<Restaurant | null> {
+    return this.byId.get(id) ?? null;
+  }
+}
+
+/** Repositorio de ítems de menú en memoria (fake). */
+export class InMemoryMenuItemRepository implements MenuItemRepository {
+  private readonly byId = new Map<string, MenuItem>();
+
+  async save(item: MenuItem): Promise<void> {
+    this.byId.set(item.id, item);
+  }
+
+  async findById(id: string): Promise<MenuItem | null> {
+    return this.byId.get(id) ?? null;
+  }
+
+  async findByRestaurant(restaurantId: string): Promise<MenuItem[]> {
+    return [...this.byId.values()].filter((item) => item.restaurantId === restaurantId);
   }
 }
 

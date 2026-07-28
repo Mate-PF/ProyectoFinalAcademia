@@ -45,3 +45,21 @@ Rojo → Verde → Refactor, un comportamiento a la vez:
 3. Refactorizar con los tests en verde.
 
 Los tests van **co-localizados** junto al archivo que prueban (`X.ts` + `X.test.ts`).
+
+## Backend (`apps/backend`)
+
+API Express que expone los casos de uso del dominio. Los puertos se implementan
+con adaptadores reales (bcrypt, JWT, `crypto.randomUUID`) y, por ahora,
+repositorios **en memoria** (se cambiarán por Postgres en la entrega de Docker).
+El `container.ts` es el *composition root*: el único lugar que conoce las
+implementaciones concretas.
+
+```bash
+pnpm --filter @proyecto/backend dev     # levanta el server (tsx watch) en :3000
+```
+
+Endpoints iniciales (auth):
+- `GET  /health`
+- `POST /api/auth/register`  → `{ name, email, password, role }`
+- `POST /api/auth/login`     → `{ email, password }` → `{ token, user }`
+- `GET  /api/auth/me`        → requiere `Authorization: Bearer <token>`

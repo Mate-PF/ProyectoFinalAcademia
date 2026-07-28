@@ -22,6 +22,7 @@ export type { UserRepository } from "./services/UserRepository";
 export type { RestaurantRepository } from "./services/RestaurantRepository";
 export type { MenuItemRepository } from "./services/MenuItemRepository";
 export type { CartRepository } from "./services/CartRepository";
+export type { OrderRepository } from "./services/OrderRepository";
 
 // Use cases
 export { RegisterUser, type RegisterUserInput } from "./use-cases/RegisterUser";
@@ -32,3 +33,7 @@ export { ListMenu, type ListMenuInput } from "./use-cases/ListMenu";
 export { AddToCart, type AddToCartInput } from "./use-cases/AddToCart";
 export { RemoveFromCart, type RemoveFromCartInput } from "./use-cases/RemoveFromCart";
 export { ViewCart, type CartView } from "./use-cases/ViewCart";
+export { Checkout, type CheckoutInput } from "./use-cases/Checkout";
+export { ChangeOrderStatus, type ChangeOrderStatusInput, type OrderAction } from "./use-cases/ChangeOrderStatus";
+export { AssignDeliverer, type AssignDelivererInput } from "./use-cases/AssignDeliverer";
+export { TrackOrder, type TrackOrderInput, type OrderTracking } from "./use-cases/TrackOrder";

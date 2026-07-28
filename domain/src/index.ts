@@ -30,6 +30,7 @@ export { LoginUser, type LoginUserInput, type LoginUserResult } from "./use-case
 export { CreateRestaurant, type CreateRestaurantInput } from "./use-cases/CreateRestaurant";
 export { AddMenuItem, type AddMenuItemInput } from "./use-cases/AddMenuItem";
 export { ListMenu, type ListMenuInput } from "./use-cases/ListMenu";
+export { ListRestaurants } from "./use-cases/ListRestaurants";
 export { AddToCart, type AddToCartInput } from "./use-cases/AddToCart";
 export { RemoveFromCart, type RemoveFromCartInput } from "./use-cases/RemoveFromCart";
 export { ViewCart, type CartView } from "./use-cases/ViewCart";

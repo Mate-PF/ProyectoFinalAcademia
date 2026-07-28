@@ -48,6 +48,10 @@ export class InMemoryRestaurantRepository implements RestaurantRepository {
   async findById(id: string): Promise<Restaurant | null> {
     return this.byId.get(id) ?? null;
   }
+
+  async findAll(): Promise<Restaurant[]> {
+    return [...this.byId.values()];
+  }
 }
 
 export class InMemoryMenuItemRepository implements MenuItemRepository {

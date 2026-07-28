@@ -21,17 +21,25 @@ export class PrismaRestaurantRepository implements RestaurantRepository {
 
   async findById(id) {
     const row = await prisma.restaurant.findUnique({ where: { id } });
-    if (!row) return null;
-    return Restaurant.create({
-      id: row.id,
-      name: row.name,
-      ownerId: row.ownerId,
-      address: Address.create({
-        street: row.street,
-        number: row.number,
-        city: row.city,
-        postalCode: row.postalCode,
-      }),
-    });
+    return row ? toDomain(row) : null;
   }
+
+  async findAll() {
+    const rows = await prisma.restaurant.findMany();
+    return rows.map(toDomain);
+  }
+}
+
+function toDomain(row) {
+  return Restaurant.create({
+    id: row.id,
+    name: row.name,
+    ownerId: row.ownerId,
+    address: Address.create({
+      street: row.street,
+      number: row.number,
+      city: row.city,
+      postalCode: row.postalCode,
+    }),
+  });
 }

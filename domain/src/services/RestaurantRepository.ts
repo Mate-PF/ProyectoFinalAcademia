@@ -4,4 +4,5 @@ import type { Restaurant } from "../entities/Restaurant";
 export interface RestaurantRepository {
   save(restaurant: Restaurant): Promise<void>;
   findById(id: string): Promise<Restaurant | null>;
+  findAll(): Promise<Restaurant[]>;
 }

@@ -30,6 +30,13 @@ export interface MenuItemDTO {
   available: boolean;
 }
 
+export interface RestaurantDTO {
+  id: string;
+  name: string;
+  ownerId: string;
+  address: { street: string; number: string; city: string; postalCode: string };
+}
+
 export interface CartLine {
   menuItemId: string;
   name: string;
@@ -79,6 +86,9 @@ export const api = {
   },
   login(input: Credentials): Promise<LoginResponse> {
     return request("/api/auth/login", { method: "POST", body: JSON.stringify(input) });
+  },
+  listRestaurants(): Promise<RestaurantDTO[]> {
+    return request("/api/restaurants");
   },
   listMenu(restaurantId: string): Promise<MenuItemDTO[]> {
     return request(`/api/restaurants/${restaurantId}/menu`);

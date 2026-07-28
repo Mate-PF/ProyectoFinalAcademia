@@ -8,6 +8,15 @@ export function restaurantRoutes(container: Container): Router {
   const router = Router();
   const { useCases, tokens } = container;
 
+  // Listar todos los restaurantes (público: el cliente elige de acá).
+  router.get(
+    "/",
+    asyncHandler(async (_req, res) => {
+      const restaurants = await useCases.listRestaurants.execute();
+      res.json(restaurants.map(restaurantToJson));
+    }),
+  );
+
   // Crear restaurante (solo ADMIN: lo valida el caso de uso).
   router.post(
     "/",

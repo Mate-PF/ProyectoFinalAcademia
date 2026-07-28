@@ -97,6 +97,14 @@ export class InMemoryOrderRepository implements OrderRepository {
   async findByCustomer(customerId: string): Promise<Order[]> {
     return [...this.byId.values()].filter((order) => order.customerId === customerId);
   }
+
+  async findByRestaurant(restaurantId: string): Promise<Order[]> {
+    return [...this.byId.values()].filter((order) => order.restaurantId === restaurantId);
+  }
+
+  async findByDeliverer(delivererId: string): Promise<Order[]> {
+    return [...this.byId.values()].filter((order) => order.delivererId === delivererId);
+  }
 }
 
 /** Hasher determinístico (fake): "hashed:<plain>". Suficiente para testear la lógica. */

@@ -2,7 +2,7 @@ import { Router } from "express";
 import type { Container } from "../../container";
 import { asyncHandler } from "../middleware/asyncHandler";
 import { requireAuth } from "../middleware/requireAuth";
-import { restaurantToJson, menuItemToJson } from "../presenters";
+import { restaurantToJson, menuItemToJson, orderToJson } from "../presenters";
 
 export function restaurantRoutes(container: Container): Router {
   const router = Router();
@@ -54,6 +54,24 @@ export function restaurantRoutes(container: Container): Router {
         currency: req.body.currency,
       });
       res.status(201).json(menuItemToJson(item));
+    }),
+  );
+
+  // Pedidos del restaurante (solo el dueño: lo valida el caso de uso).
+  router.get(
+    "/:id/orders",
+    requireAuth(tokens),
+    asyncHandler(async (req, res) => {
+      const auth = req.auth;
+      if (auth === undefined) {
+        res.status(401).json({ error: "No autenticado" });
+        return;
+      }
+      const orders = await useCases.listRestaurantOrders.execute({
+        restaurantId: req.params.id,
+        actorId: auth.userId,
+      });
+      res.json(orders.map(orderToJson));
     }),
   );
 

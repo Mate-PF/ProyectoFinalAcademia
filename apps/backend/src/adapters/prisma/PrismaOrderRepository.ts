@@ -37,6 +37,16 @@ export class PrismaOrderRepository implements OrderRepository {
     const rows = await prisma.order.findMany({ where: { customerId }, include: { items: true } });
     return rows.map(toDomain);
   }
+
+  async findByRestaurant(restaurantId) {
+    const rows = await prisma.order.findMany({ where: { restaurantId }, include: { items: true } });
+    return rows.map(toDomain);
+  }
+
+  async findByDeliverer(delivererId) {
+    const rows = await prisma.order.findMany({ where: { delivererId }, include: { items: true } });
+    return rows.map(toDomain);
+  }
 }
 
 function toDomain(row) {

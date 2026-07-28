@@ -62,6 +62,34 @@ export function orderRoutes(container: Container): Router {
     }),
   );
 
+  // Mis pedidos (historial del cliente autenticado).
+  router.get(
+    "/orders",
+    asyncHandler(async (req, res) => {
+      const auth = req.auth;
+      if (auth === undefined) {
+        res.status(401).json({ error: "No autenticado" });
+        return;
+      }
+      const orders = await useCases.listMyOrders.execute({ customerId: auth.userId });
+      res.json(orders.map(orderToJson));
+    }),
+  );
+
+  // Mis entregas (pedidos asignados al repartidor autenticado).
+  router.get(
+    "/deliveries",
+    asyncHandler(async (req, res) => {
+      const auth = req.auth;
+      if (auth === undefined) {
+        res.status(401).json({ error: "No autenticado" });
+        return;
+      }
+      const orders = await useCases.listDeliveries.execute({ delivererId: auth.userId });
+      res.json(orders.map(orderToJson));
+    }),
+  );
+
   // Seguir un pedido (solo el cliente dueño).
   router.get(
     "/orders/:id",

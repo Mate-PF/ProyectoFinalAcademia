@@ -1,53 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { RegisterUser } from "./RegisterUser";
-import { User } from "../entities/User";
-import type { Email } from "../value-objects/Email";
-import type { UserRepository } from "../services/UserRepository";
-import type { PasswordHasher } from "../services/PasswordHasher";
-import type { IdGenerator } from "../services/IdGenerator";
-
-// ── Test doubles (fakes en memoria) de los puertos ──────────────────────────
-
-class InMemoryUserRepository implements UserRepository {
-  private readonly byId = new Map<string, User>();
-
-  async save(user: User): Promise<void> {
-    this.byId.set(user.id, user);
-  }
-
-  async findByEmail(email: Email): Promise<User | null> {
-    for (const user of this.byId.values()) {
-      if (user.email.equals(email)) {
-        return user;
-      }
-    }
-    return null;
-  }
-
-  async findById(id: string): Promise<User | null> {
-    return this.byId.get(id) ?? null;
-  }
-}
-
-class FakePasswordHasher implements PasswordHasher {
-  async hash(plain: string): Promise<string> {
-    return `hashed:${plain}`;
-  }
-
-  async compare(plain: string, hash: string): Promise<boolean> {
-    return hash === `hashed:${plain}`;
-  }
-}
-
-class FixedIdGenerator implements IdGenerator {
-  constructor(private readonly id: string = "generated-id") {}
-
-  next(): string {
-    return this.id;
-  }
-}
-
-// ── Tests ───────────────────────────────────────────────────────────────────
+import { InMemoryUserRepository, FakePasswordHasher, FixedIdGenerator } from "./__test__/fakes";
 
 function setup() {
   const users = new InMemoryUserRepository();

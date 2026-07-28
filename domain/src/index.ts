@@ -17,7 +17,9 @@ export { OrderItem, type OrderItemProps } from "./entities/OrderItem";
 // Ports (services) — el dominio define las interfaces; la infraestructura las implementa.
 export type { PasswordHasher } from "./services/PasswordHasher";
 export type { IdGenerator } from "./services/IdGenerator";
+export type { TokenGenerator, AuthTokenPayload } from "./services/TokenGenerator";
 export type { UserRepository } from "./services/UserRepository";
 
 // Use cases
 export { RegisterUser, type RegisterUserInput } from "./use-cases/RegisterUser";
+export { LoginUser, type LoginUserInput, type LoginUserResult } from "./use-cases/LoginUser";

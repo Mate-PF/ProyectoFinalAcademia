@@ -1,14 +1,28 @@
 import { useCallback, useEffect, useState } from "react";
-import { api, type MenuItemDTO, type RestaurantDTO } from "../api/client";
+import { api, type MenuItemDTO, type OrderAction, type OrderDTO, type RestaurantDTO } from "../api/client";
 import { useSession } from "../session/SessionContext";
 import { RestaurantForm, type RestaurantFormValues } from "../components/RestaurantForm";
 import { MenuItemForm, type MenuItemFormValues } from "../components/MenuItemForm";
 import { MenuList } from "../components/MenuList";
+import { OrderList } from "../components/OrderList";
+
+const ADMIN_ACTIONS: Record<string, { label: string; action: OrderAction }[]> = {
+  PENDIENTE: [
+    { label: "Confirmar", action: "CONFIRM" },
+    { label: "Cancelar", action: "CANCEL" },
+  ],
+  CONFIRMADO: [
+    { label: "Preparar", action: "START_PREPARING" },
+    { label: "Cancelar", action: "CANCEL" },
+  ],
+  EN_PREPARACION: [{ label: "Despachar", action: "DISPATCH" }],
+};
 
 export function AdminPage() {
   const { token, user } = useSession();
   const [restaurant, setRestaurant] = useState<RestaurantDTO | null>(null);
   const [menu, setMenu] = useState<MenuItemDTO[]>([]);
+  const [orders, setOrders] = useState<OrderDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string>();
@@ -17,10 +31,16 @@ export function AdminPage() {
     setMenu(await api.listMenu(restaurantId));
   }, []);
 
+  const reloadOrders = useCallback(
+    async (restaurantId: string) => {
+      if (token === null) return;
+      setOrders(await api.restaurantOrders(token, restaurantId));
+    },
+    [token],
+  );
+
   useEffect(() => {
-    if (user === null) {
-      return;
-    }
+    if (user === null) return;
     let active = true;
     setLoading(true);
     api
@@ -31,6 +51,7 @@ export function AdminPage() {
         setRestaurant(mine);
         if (mine !== null) {
           await reloadMenu(mine.id);
+          await reloadOrders(mine.id);
         }
       })
       .catch((e: unknown) => {
@@ -42,11 +63,9 @@ export function AdminPage() {
     return () => {
       active = false;
     };
-  }, [user, reloadMenu]);
+  }, [user, reloadMenu, reloadOrders]);
 
-  if (token === null || user === null) {
-    return null;
-  }
+  if (token === null || user === null) return null;
   const authToken = token;
 
   async function handleCreateRestaurant(values: RestaurantFormValues) {
@@ -55,15 +74,11 @@ export function AdminPage() {
     try {
       const created = await api.createRestaurant(authToken, {
         name: values.name,
-        address: {
-          street: values.street,
-          number: values.number,
-          city: values.city,
-          postalCode: values.postalCode,
-        },
+        address: { street: values.street, number: values.number, city: values.city, postalCode: values.postalCode },
       });
       setRestaurant(created);
       await reloadMenu(created.id);
+      await reloadOrders(created.id);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Error al crear");
     } finally {
@@ -76,16 +91,23 @@ export function AdminPage() {
     setError(undefined);
     setSaving(true);
     try {
-      await api.addMenuItem(authToken, restaurant.id, {
-        name: values.name,
-        price: values.price,
-        currency: "ARS",
-      });
+      await api.addMenuItem(authToken, restaurant.id, { name: values.name, price: values.price, currency: "ARS" });
       await reloadMenu(restaurant.id);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Error al agregar");
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleOrderAction(orderId: string, action: OrderAction) {
+    if (restaurant === null) return;
+    setError(undefined);
+    try {
+      await api.changeOrderStatus(authToken, orderId, action);
+      await reloadOrders(restaurant.id);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Error al cambiar el estado");
     }
   }
 
@@ -96,8 +118,11 @@ export function AdminPage() {
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-neutral-900">Administrar restaurante</h2>
+      {error !== undefined && (
+        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>
+      )}
       {restaurant === null ? (
-        <RestaurantForm onSubmit={handleCreateRestaurant} error={error} loading={saving} />
+        <RestaurantForm onSubmit={handleCreateRestaurant} loading={saving} />
       ) : (
         <>
           <div className="rounded-2xl bg-white p-6 shadow-sm">
@@ -107,10 +132,32 @@ export function AdminPage() {
               {restaurant.address.street} {restaurant.address.number}, {restaurant.address.city}
             </p>
           </div>
-          <MenuItemForm onSubmit={handleAddItem} error={error} loading={saving} />
+
+          <MenuItemForm onSubmit={handleAddItem} loading={saving} />
+
           <div>
             <h3 className="mb-3 text-lg font-bold text-neutral-900">Menú actual</h3>
             <MenuList items={menu} emptyMessage="Todavía no cargaste ítems" />
+          </div>
+
+          <div>
+            <h3 className="mb-3 text-lg font-bold text-neutral-900">Pedidos</h3>
+            <OrderList
+              orders={orders}
+              emptyMessage="Todavía no hay pedidos"
+              renderActions={(order) =>
+                (ADMIN_ACTIONS[order.status] ?? []).map((a) => (
+                  <button
+                    key={a.action}
+                    type="button"
+                    onClick={() => void handleOrderAction(order.id, a.action)}
+                    className="rounded-lg bg-brand px-3 py-1 text-sm font-semibold text-white transition hover:bg-brand-dark"
+                  >
+                    {a.label}
+                  </button>
+                ))
+              }
+            />
           </div>
         </>
       )}

@@ -1,5 +1,5 @@
-import { createContext, useCallback, useContext, useState, type ReactNode } from "react";
-import { api, type AuthUser } from "../api/client";
+import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
+import { api, setUnauthorizedHandler, type AuthUser } from "../api/client";
 
 export interface RegisterInput {
   name: string;
@@ -66,6 +66,12 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     setUser(null);
     localStorage.removeItem(STORAGE_KEY);
   }, []);
+
+  // Si una request autenticada devuelve 401, cerramos sesión automáticamente.
+  useEffect(() => {
+    setUnauthorizedHandler(logout);
+    return () => setUnauthorizedHandler(null);
+  }, [logout]);
 
   return (
     <SessionContext.Provider value={{ token, user, login, register, logout }}>

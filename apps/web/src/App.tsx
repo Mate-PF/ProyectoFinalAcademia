@@ -10,6 +10,8 @@ import { RestaurantsPage } from "./pages/RestaurantsPage";
 import { RestaurantMenuPage } from "./pages/RestaurantMenuPage";
 import { CartPage } from "./pages/CartPage";
 import { OrderPage } from "./pages/OrderPage";
+import { MyOrdersPage } from "./pages/MyOrdersPage";
+import { DeliveriesPage } from "./pages/DeliveriesPage";
 
 function Header() {
   const { user, logout } = useSession();
@@ -28,10 +30,13 @@ function Header() {
                 Administrar
               </Link>
             )}
-            {user.role !== "ADMIN" && (
+            {user.role === "CLIENTE" && (
               <>
                 <Link to="/restaurants" className="font-medium hover:underline">
                   Restaurantes
+                </Link>
+                <Link to="/orders" className="font-medium hover:underline">
+                  Mis pedidos
                 </Link>
                 <Link to="/cart" className="relative font-medium hover:underline">
                   🛒
@@ -42,6 +47,11 @@ function Header() {
                   )}
                 </Link>
               </>
+            )}
+            {user.role === "REPARTIDOR" && (
+              <Link to="/deliveries" className="font-medium hover:underline">
+                Mis entregas
+              </Link>
             )}
             <span className="hidden sm:inline">Hola, {user.name}</span>
             <button
@@ -73,7 +83,9 @@ export function App() {
                 <Route path="/restaurants" element={<ProtectedRoute><RestaurantsPage /></ProtectedRoute>} />
                 <Route path="/restaurants/:id" element={<ProtectedRoute><RestaurantMenuPage /></ProtectedRoute>} />
                 <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
+                <Route path="/orders" element={<ProtectedRoute><MyOrdersPage /></ProtectedRoute>} />
                 <Route path="/orders/:id" element={<ProtectedRoute><OrderPage /></ProtectedRoute>} />
+                <Route path="/deliveries" element={<ProtectedRoute role="REPARTIDOR"><DeliveriesPage /></ProtectedRoute>} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </main>

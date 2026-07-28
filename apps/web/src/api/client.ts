@@ -90,6 +90,12 @@ interface RequestOptions extends RequestInit {
   token?: string;
 }
 
+let onUnauthorized: (() => void) | null = null;
+/** Registra un handler que se dispara si una request autenticada devuelve 401. */
+export function setUnauthorizedHandler(handler: (() => void) | null): void {
+  onUnauthorized = handler;
+}
+
 async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const { token, ...rest } = options;
   const res = await fetch(`${BASE_URL}${path}`, {
@@ -99,6 +105,9 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
       ...(token !== undefined ? { Authorization: `Bearer ${token}` } : {}),
     },
   });
+  if (res.status === 401 && token !== undefined && onUnauthorized !== null) {
+    onUnauthorized(); // token vencido/ inválido en una request autenticada -> cerrar sesión
+  }
   const data = await res.json();
   if (!res.ok) {
     throw new Error(data.error ?? `Error ${res.status}`);

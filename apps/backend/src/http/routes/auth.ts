@@ -2,6 +2,7 @@ import { Router } from "express";
 import type { Container } from "../../container";
 import { asyncHandler } from "../middleware/asyncHandler";
 import { requireAuth } from "../middleware/requireAuth";
+import { userToJson } from "../presenters";
 
 export function authRoutes(container: Container): Router {
   const router = Router();
@@ -11,7 +12,7 @@ export function authRoutes(container: Container): Router {
     "/register",
     asyncHandler(async (req, res) => {
       const user = await useCases.registerUser.execute(req.body);
-      res.status(201).json({ id: user.id, name: user.name, email: user.email.value, role: user.role });
+      res.status(201).json(userToJson(user));
     }),
   );
 
@@ -19,10 +20,7 @@ export function authRoutes(container: Container): Router {
     "/login",
     asyncHandler(async (req, res) => {
       const { token, user } = await useCases.loginUser.execute(req.body);
-      res.json({
-        token,
-        user: { id: user.id, name: user.name, email: user.email.value, role: user.role },
-      });
+      res.json({ token, user: userToJson(user) });
     }),
   );
 

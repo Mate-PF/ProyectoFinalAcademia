@@ -4,7 +4,8 @@
     "rootDir": "src",
     "verbatimModuleSyntax": false,
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "noUncheckedIndexedAccess": false
   },
   "include": ["src/**/*"]
 }

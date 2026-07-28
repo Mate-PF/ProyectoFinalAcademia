@@ -1,4 +1,5 @@
 import type { MenuItemDTO } from "../api/client";
+import { formatMoney } from "../format";
 
 export interface MenuListProps {
   items: MenuItemDTO[];
@@ -25,7 +26,7 @@ export function MenuList({
       {items.map((item) => (
         <li key={item.id}>
           <span>{item.name}</span>
-          <span>{formatPrice(item.price)}</span>
+          <span>{formatMoney(item.price)}</span>
           {onAdd !== undefined && (
             <button type="button" onClick={() => onAdd(item.id)} disabled={!item.available}>
               {item.available ? "Agregar" : "No disponible"}
@@ -37,6 +38,3 @@ export function MenuList({
   );
 }
 
-function formatPrice(price: { amount: number; currency: string }): string {
-  return `${price.currency} ${price.amount.toFixed(2)}`;
-}

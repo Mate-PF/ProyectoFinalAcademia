@@ -37,4 +37,23 @@ describe("api client", () => {
       "Email o contraseña incorrectos",
     );
   });
+
+  it("viewCart manda el token en Authorization y devuelve el carrito", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ cartId: "c", restaurantId: "r", items: [], total: null }),
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const cart = await api.viewCart("tok123");
+
+    expect(cart?.cartId).toBe("c");
+    const options = fetchMock.mock.calls[0][1] as { headers: Record<string, string> };
+    expect(options.headers.Authorization).toBe("Bearer tok123");
+  });
+
+  it("viewCart devuelve null si el backend responde sin carrito", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({ cart: null }) }));
+    expect(await api.viewCart("t")).toBeNull();
+  });
 });

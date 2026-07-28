@@ -1,5 +1,10 @@
 const BASE_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000";
 
+export interface Money {
+  amount: number;
+  currency: string;
+}
+
 export interface Credentials {
   email: string;
   password: string;
@@ -21,14 +26,44 @@ export interface MenuItemDTO {
   id: string;
   restaurantId: string;
   name: string;
-  price: { amount: number; currency: string };
+  price: Money;
   available: boolean;
 }
 
-async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+export interface CartLine {
+  menuItemId: string;
+  name: string;
+  unitPrice: Money;
+  quantity: number;
+  subtotal: Money;
+}
+
+export interface CartView {
+  cartId: string;
+  restaurantId: string;
+  items: CartLine[];
+  total: Money | null;
+}
+
+export interface OrderTrackingDTO {
+  orderId: string;
+  status: string;
+  total: Money;
+  delivererId: string | null;
+}
+
+interface RequestOptions extends RequestInit {
+  token?: string;
+}
+
+async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  const { token, ...rest } = options;
   const res = await fetch(`${BASE_URL}${path}`, {
-    ...options,
-    headers: { "Content-Type": "application/json", ...(options.headers ?? {}) },
+    ...rest,
+    headers: {
+      "Content-Type": "application/json",
+      ...(token !== undefined ? { Authorization: `Bearer ${token}` } : {}),
+    },
   });
   const data = await res.json();
   if (!res.ok) {
@@ -47,5 +82,25 @@ export const api = {
   },
   listMenu(restaurantId: string): Promise<MenuItemDTO[]> {
     return request(`/api/restaurants/${restaurantId}/menu`);
+  },
+  addToCart(token: string, menuItemId: string, quantity = 1): Promise<CartView> {
+    return request("/api/cart/items", {
+      method: "POST",
+      token,
+      body: JSON.stringify({ menuItemId, quantity }),
+    });
+  },
+  removeFromCart(token: string, menuItemId: string): Promise<CartView> {
+    return request(`/api/cart/items/${menuItemId}`, { method: "DELETE", token });
+  },
+  async viewCart(token: string): Promise<CartView | null> {
+    const result = await request<CartView | { cart: null }>("/api/cart", { token });
+    return "cart" in result ? null : result;
+  },
+  checkout(token: string): Promise<{ id: string; status: string }> {
+    return request("/api/checkout", { method: "POST", token });
+  },
+  trackOrder(token: string, orderId: string): Promise<OrderTrackingDTO> {
+    return request(`/api/orders/${orderId}`, { token });
   },
 };

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useSession } from "../session/SessionContext";
 
 export function HomePage() {
@@ -12,13 +13,12 @@ export function HomePage() {
         <h2 className="text-2xl font-bold text-neutral-900">¡Hola, {user.name}!</h2>
         <p className="mt-1 text-neutral-500">Ingresaste como {user.role}.</p>
       </div>
-      <div className="rounded-2xl bg-brand-light p-6 text-brand-dark">
-        <p className="font-medium">
-          {isAdmin
-            ? "Próximamente: gestioná tu restaurante y su menú."
-            : "Próximamente: explorá restaurantes y armá tu pedido."}
-        </p>
-      </div>
+      <Link
+        to={isAdmin ? "/admin" : "/restaurants"}
+        className="block rounded-2xl bg-brand p-6 font-semibold text-white shadow-sm transition hover:bg-brand-dark"
+      >
+        {isAdmin ? "Administrar mi restaurante →" : "Ver restaurantes y pedir →"}
+      </Link>
     </div>
   );
 }

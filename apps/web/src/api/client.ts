@@ -93,6 +93,23 @@ export const api = {
   listMenu(restaurantId: string): Promise<MenuItemDTO[]> {
     return request(`/api/restaurants/${restaurantId}/menu`);
   },
+  createRestaurant(
+    token: string,
+    input: { name: string; address: { street: string; number: string; city: string; postalCode: string } },
+  ): Promise<RestaurantDTO> {
+    return request("/api/restaurants", { method: "POST", token, body: JSON.stringify(input) });
+  },
+  addMenuItem(
+    token: string,
+    restaurantId: string,
+    input: { name: string; price: number; currency: string },
+  ): Promise<MenuItemDTO> {
+    return request(`/api/restaurants/${restaurantId}/menu`, {
+      method: "POST",
+      token,
+      body: JSON.stringify(input),
+    });
+  },
   addToCart(token: string, menuItemId: string, quantity = 1): Promise<CartView> {
     return request("/api/cart/items", {
       method: "POST",

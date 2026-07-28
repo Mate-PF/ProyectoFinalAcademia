@@ -4,6 +4,7 @@ import { ProtectedRoute } from "./routes/ProtectedRoute";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { HomePage } from "./pages/HomePage";
+import { AdminPage } from "./pages/AdminPage";
 
 function Header() {
   const { user, logout } = useSession();
@@ -15,7 +16,12 @@ function Header() {
           <span className="text-xl font-bold tracking-tight">Pedidos For-It</span>
         </Link>
         {user !== null && (
-          <div className="flex items-center gap-3 text-sm">
+          <nav className="flex items-center gap-4 text-sm">
+            {user.role === "ADMIN" && (
+              <Link to="/admin" className="font-medium hover:underline">
+                Administrar
+              </Link>
+            )}
             <span className="hidden sm:inline">Hola, {user.name}</span>
             <button
               onClick={logout}
@@ -23,7 +29,7 @@ function Header() {
             >
               Salir
             </button>
-          </div>
+          </nav>
         )}
       </div>
     </header>
@@ -45,6 +51,14 @@ export function App() {
                 element={
                   <ProtectedRoute>
                     <HomePage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute role="ADMIN">
+                    <AdminPage />
                   </ProtectedRoute>
                 }
               />

@@ -23,7 +23,7 @@ export function Cart({ items, total, onRemove, onCheckout, loading = false }: Ca
           <li key={line.menuItemId} className="flex items-center gap-3 py-3">
             <span className="flex-1 font-medium text-fg">{line.name}</span>
             <span className="text-sm text-muted">×{line.quantity}</span>
-            <span className="w-28 text-right font-medium">{formatMoney(line.subtotal)}</span>
+            <span className="w-28 text-right font-medium tabular-nums">{formatMoney(line.subtotal)}</span>
             {onRemove !== undefined && (
               <button
                 type="button"
@@ -38,7 +38,7 @@ export function Cart({ items, total, onRemove, onCheckout, loading = false }: Ca
       </ul>
 
       {total !== null && (
-        <p className="mt-4 border-t border-border pt-4 text-right text-lg font-bold text-fg">
+        <p className="mt-4 border-t border-border pt-4 text-right text-lg font-bold text-fg tabular-nums">
           Total: {formatMoney(total)}
         </p>
       )}

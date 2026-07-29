@@ -50,3 +50,31 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
+
+:root {
+  color-scheme: light;
+}
+.dark {
+  color-scheme: dark;
+}
+
+@layer base {
+  /* Transición suave de colores (incluye el cambio claro/oscuro). */
+  *,
+  *::before,
+  *::after {
+    transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+    transition-duration: 150ms;
+    transition-timing-function: ease;
+  }
+  /* Foco visible y consistente para teclado. */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  /* Feedback sutil al presionar cualquier botón. */
+  button:not(:disabled):active {
+    transform: translateY(0.5px);
+  }
+}

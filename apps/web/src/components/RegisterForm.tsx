@@ -28,7 +28,7 @@ export function RegisterForm({ onSubmit, error, loading = false }: RegisterFormP
 
   return (
     <form onSubmit={handleSubmit} aria-label="Crear cuenta" className="space-y-5 rounded-2xl bg-surface p-8 shadow-sm">
-      <h2 className="text-2xl font-bold text-fg">Crear cuenta</h2>
+      <h2 className="text-2xl font-bold tracking-tight text-fg">Crear cuenta</h2>
 
       <label className="block space-y-1.5">
         <span className="text-sm font-medium text-fg">Nombre</span>

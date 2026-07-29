@@ -32,13 +32,13 @@ export function RestaurantsPage() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold text-fg">Restaurantes</h2>
+      <h2 className="text-2xl font-bold tracking-tight text-fg">Restaurantes</h2>
       <ul className="space-y-3">
         {restaurants.map((r) => (
           <li key={r.id}>
             <Link
               to={`/restaurants/${r.id}`}
-              className="block rounded-xl bg-surface p-4 shadow-sm transition hover:shadow-md"
+              className="block rounded-xl border border-border bg-surface p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
             >
               <p className="font-medium text-fg">{r.name}</p>
               <p className="text-sm text-muted">

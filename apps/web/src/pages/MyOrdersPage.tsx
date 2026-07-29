@@ -27,7 +27,7 @@ export function MyOrdersPage() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold text-fg">Mis pedidos</h2>
+      <h2 className="text-2xl font-bold tracking-tight text-fg">Mis pedidos</h2>
       <OrderList
         orders={orders}
         loading={loading}

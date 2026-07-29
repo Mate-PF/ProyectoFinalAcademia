@@ -21,7 +21,7 @@ export function MenuList({ items, onAdd, loading = false, emptyMessage = "No hay
         <li key={item.id} className="flex items-center gap-4 rounded-xl bg-surface p-4 shadow-sm">
           <div className="flex-1">
             <p className="font-medium text-fg">{item.name}</p>
-            <p className="text-sm text-muted">{formatMoney(item.price)}</p>
+            <p className="text-sm text-muted tabular-nums">{formatMoney(item.price)}</p>
           </div>
           {onAdd !== undefined && (
             <button

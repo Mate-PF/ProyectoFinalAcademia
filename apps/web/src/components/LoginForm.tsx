@@ -20,7 +20,7 @@ export function LoginForm({ onSubmit, error, loading = false }: LoginFormProps) 
 
   return (
     <form onSubmit={handleSubmit} aria-label="Iniciar sesión" className="space-y-5 rounded-2xl bg-surface p-8 shadow-sm">
-      <h2 className="text-2xl font-bold text-fg">Iniciar sesión</h2>
+      <h2 className="text-2xl font-bold tracking-tight text-fg">Iniciar sesión</h2>
 
       <label className="block space-y-1.5">
         <span className="text-sm font-medium text-fg">Email</span>

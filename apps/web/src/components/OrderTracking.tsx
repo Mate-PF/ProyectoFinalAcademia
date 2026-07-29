@@ -11,7 +11,7 @@ export function OrderTracking({ tracking }: OrderTrackingProps) {
     <section aria-label="Seguimiento del pedido" className="space-y-3 rounded-2xl bg-surface p-6 shadow-sm">
       <p className="text-sm text-muted">Pedido {tracking.orderId}</p>
       <StatusBadge status={tracking.status} />
-      <p className="text-lg font-bold text-fg">{formatMoney(tracking.total)}</p>
+      <p className="text-lg font-bold text-fg tabular-nums">{formatMoney(tracking.total)}</p>
       {tracking.delivererId !== null && (
         <p className="text-sm text-muted">Repartidor: {tracking.delivererId}</p>
       )}

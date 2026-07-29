@@ -10,7 +10,7 @@ export function HomePage() {
   return (
     <div className="space-y-4">
       <div className="rounded-2xl bg-surface p-8 shadow-sm">
-        <h2 className="text-2xl font-bold text-fg">¡Hola, {user.name}!</h2>
+        <h2 className="text-2xl font-bold tracking-tight text-fg">¡Hola, {user.name}!</h2>
         <p className="mt-1 text-muted">Ingresaste como {user.role}.</p>
       </div>
       <Link

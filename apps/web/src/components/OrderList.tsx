@@ -31,7 +31,7 @@ export function OrderList({ orders, loading = false, emptyMessage = "No hay pedi
             </div>
             <div className="flex flex-col items-end gap-1">
               <StatusBadge status={order.status} />
-              <span className="font-medium">{formatMoney(order.total)}</span>
+              <span className="font-medium tabular-nums">{formatMoney(order.total)}</span>
             </div>
           </div>
           {renderActions !== undefined && (

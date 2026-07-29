@@ -28,7 +28,7 @@ export function OrderPage() {
 
   return (
     <div className="mx-auto max-w-lg space-y-4">
-      <h2 className="text-2xl font-bold text-fg">Tu pedido</h2>
+      <h2 className="text-2xl font-bold tracking-tight text-fg">Tu pedido</h2>
       <OrderTracking tracking={tracking} />
       <button
         type="button"

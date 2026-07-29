@@ -145,7 +145,7 @@ export function AdminPage() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-fg">Administrar restaurante</h2>
+      <h2 className="text-2xl font-bold tracking-tight text-fg">Administrar restaurante</h2>
       {error !== undefined && <p className="rounded-lg bg-red-50 dark:bg-red-500/10 px-3 py-2 text-sm text-red-700 dark:text-red-300">{error}</p>}
       {restaurant === null ? (
         <RestaurantForm onSubmit={handleCreateRestaurant} loading={saving} />

@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { OrderDTO } from "../api/client";
 import { formatMoney } from "../format";
 import { StatusBadge } from "./StatusBadge";
+import { Skeleton } from "./Skeleton";
 
 export interface OrderListProps {
   orders: OrderDTO[];
@@ -13,7 +14,17 @@ export interface OrderListProps {
 /** Lista de pedidos con estado y total. Las acciones (botones) las inyecta la página. */
 export function OrderList({ orders, loading = false, emptyMessage = "No hay pedidos", renderActions }: OrderListProps) {
   if (loading) {
-    return <p className="py-8 text-center text-muted">Cargando pedidos…</p>;
+    return (
+      <div aria-busy="true" className="space-y-3">
+        <span className="sr-only">Cargando pedidos…</span>
+        {[0, 1].map((i) => (
+          <div key={i} className="space-y-2 rounded-xl bg-surface p-4 shadow-sm">
+            <Skeleton className="h-3 w-16" />
+            <Skeleton className="h-4 w-48" />
+          </div>
+        ))}
+      </div>
+    );
   }
   if (orders.length === 0) {
     return <p className="py-8 text-center text-muted">{emptyMessage}</p>;

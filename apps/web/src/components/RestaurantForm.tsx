@@ -34,7 +34,7 @@ export function RestaurantForm({ onSubmit, error, loading = false }: RestaurantF
         <span className="text-sm font-medium text-fg">Nombre</span>
         <input value={name} onChange={(e) => setName(e.target.value)} className={inputClass} />
       </label>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <label className="block space-y-1.5">
           <span className="text-sm font-medium text-fg">Calle</span>
           <input value={street} onChange={(e) => setStreet(e.target.value)} className={inputClass} />
@@ -44,7 +44,7 @@ export function RestaurantForm({ onSubmit, error, loading = false }: RestaurantF
           <input value={number} onChange={(e) => setNumber(e.target.value)} className={inputClass} />
         </label>
       </div>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <label className="block space-y-1.5">
           <span className="text-sm font-medium text-fg">Ciudad</span>
           <input value={city} onChange={(e) => setCity(e.target.value)} className={inputClass} />

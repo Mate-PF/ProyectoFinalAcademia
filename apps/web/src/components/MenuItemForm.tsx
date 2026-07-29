@@ -24,7 +24,7 @@ export function MenuItemForm({ onSubmit, error, loading = false }: MenuItemFormP
   return (
     <form onSubmit={handleSubmit} aria-label="Agregar ítem al menú" className="space-y-4 rounded-2xl bg-surface p-6 shadow-sm">
       <h3 className="text-lg font-bold text-fg">Agregar ítem al menú</h3>
-      <div className="grid grid-cols-[1fr_auto] gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto]">
         <label className="block space-y-1.5">
           <span className="text-sm font-medium text-fg">Nombre</span>
           <input value={name} onChange={(e) => setName(e.target.value)} className={inputClass} />

@@ -1,4 +1,5 @@
 import type { MenuItemDTO } from "../api/client";
+import { Skeleton } from "./Skeleton";
 import { formatMoney } from "../format";
 
 export interface MenuListProps {
@@ -10,7 +11,20 @@ export interface MenuListProps {
 
 export function MenuList({ items, onAdd, loading = false, emptyMessage = "No hay ítems en el menú" }: MenuListProps) {
   if (loading) {
-    return <p className="py-8 text-center text-muted">Cargando menú…</p>;
+    return (
+      <div aria-busy="true" className="space-y-3">
+        <span className="sr-only">Cargando menú…</span>
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="flex items-center gap-4 rounded-xl bg-surface p-4 shadow-sm">
+            <div className="flex-1 space-y-2">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-3 w-20" />
+            </div>
+            <Skeleton className="h-8 w-20" />
+          </div>
+        ))}
+      </div>
+    );
   }
   if (items.length === 0) {
     return <p className="py-8 text-center text-muted">{emptyMessage}</p>;

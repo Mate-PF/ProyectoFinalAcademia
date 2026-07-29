@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api, type RestaurantDTO } from "../api/client";
+import { Skeleton } from "../components/Skeleton";
 
 export function RestaurantsPage() {
   const [restaurants, setRestaurants] = useState<RestaurantDTO[]>([]);
@@ -25,7 +26,18 @@ export function RestaurantsPage() {
     };
   }, []);
 
-  if (loading) return <p className="py-8 text-center text-muted">Cargando restaurantes…</p>;
+  if (loading)
+    return (
+      <div aria-busy="true" className="space-y-4">
+        <span className="sr-only">Cargando restaurantes…</span>
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="space-y-2 rounded-xl bg-surface p-4 shadow-sm">
+            <Skeleton className="h-4 w-40" />
+            <Skeleton className="h-3 w-56" />
+          </div>
+        ))}
+      </div>
+    );
   if (error !== undefined) return <p className="py-8 text-center text-red-600 dark:text-red-400">{error}</p>;
   if (restaurants.length === 0)
     return <p className="py-8 text-center text-muted">No hay restaurantes todavía</p>;

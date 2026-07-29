@@ -1,5 +1,6 @@
 import type { CartLine, Money } from "../api/client";
 import { formatMoney } from "../format";
+import { Skeleton } from "./Skeleton";
 
 export interface CartProps {
   items: CartLine[];
@@ -11,7 +12,14 @@ export interface CartProps {
 
 export function Cart({ items, total, onRemove, onCheckout, loading = false }: CartProps) {
   if (loading) {
-    return <p className="py-8 text-center text-muted">Cargando carrito…</p>;
+    return (
+      <div aria-busy="true" className="space-y-3 rounded-2xl bg-surface p-6 shadow-sm">
+        <span className="sr-only">Cargando carrito…</span>
+        {[0, 1].map((i) => (
+          <Skeleton key={i} className="h-6 w-full" />
+        ))}
+      </div>
+    );
   }
   if (items.length === 0) {
     return <p className="py-8 text-center text-muted">El carrito está vacío</p>;

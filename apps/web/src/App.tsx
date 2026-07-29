@@ -34,12 +34,12 @@ function Header() {
   const { itemCount } = useCart();
   return (
     <header className="bg-accent text-accent-fg shadow-md">
-      <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
+      <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-y-3 px-4 py-3">
         <Link to="/" className="flex items-center gap-2">
           <span className="text-2xl">🍔</span>
           <span className="text-xl font-bold tracking-tight">Pedidos For-It</span>
         </Link>
-        <div className="flex items-center gap-3 text-sm">
+        <div className="flex flex-wrap items-center justify-end gap-3 text-sm">
           {user !== null && (
             <nav className="flex items-center gap-4">
               {user.role === "ADMIN" && (

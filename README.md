@@ -85,3 +85,37 @@ PERSISTENCE=prisma pnpm --filter @proyecto/backend dev
 > usan `Order.rehydrate`/`Cart.rehydrate` al leer. **El dominio y los casos de
 > uso NO cambian**: solo se enchufa otro adaptador — ese es el pago de la
 > arquitectura limpia.
+
+## Uso de la aplicación
+
+Levantar en dos terminales:
+```bash
+pnpm --filter @proyecto/backend dev     # API en :3000 (persistencia en memoria por defecto)
+pnpm --filter @proyecto/web dev         # Frontend en :5173
+```
+Luego abrir **http://localhost:5173**.
+
+### Crear cuenta y elegir rol
+
+![Crear cuenta](docs/img/register.png)
+
+En **Crear cuenta** se ingresa nombre, email y contraseña, y se elige un **rol**. Al registrarse, la sesión queda iniciada automáticamente. Cada rol ve una app distinta:
+
+- **Cliente**: pide comida (Restaurantes → menú → carrito → checkout → seguimiento) y consulta **Mis pedidos**.
+- **Admin**: crea su restaurante, carga el menú y **gestiona los pedidos** (Confirmar → Preparar → Despachar), pudiendo además **asignar un repartidor**.
+- **Repartidor**: ve **Mis entregas** y marca los pedidos como entregados.
+
+### Iniciar sesión
+
+![Iniciar sesión](docs/img/login.png)
+
+Con email y contraseña. El menú de navegación se adapta al rol del usuario. El botón 🌙/☀️ del header alterna entre tema **claro y oscuro** (la preferencia se recuerda).
+
+### Comportamiento esperado (flujo completo)
+
+1. El **cliente** arma un pedido y lo confirma → queda en estado **Pendiente**.
+2. El **admin** lo **Confirma → Prepara → Despacha** (cada acción actualiza el estado en el acto) y le **asigna un repartidor**.
+3. El pedido pasa a **En camino**; el **repartidor** lo marca como **Entregado**.
+4. El **cliente** ve el estado actualizado en **Mis pedidos** / seguimiento.
+
+> En modo memoria (por defecto) los datos se reinician cada vez que se reinicia el backend. Para persistencia real, ver la sección de Docker + Prisma.

@@ -6,3 +6,9 @@ coverage/
 .env
 .env.local
 storybook-static/
+
+# base de datos local
+*.db
+*.sqlite
+*.sqlite3
+apps/backend/data/

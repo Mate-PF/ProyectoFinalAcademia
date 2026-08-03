@@ -35,7 +35,6 @@ RUN pnpm --filter @proyecto/backend exec prisma generate
 
 # ---- runtime ----
 FROM node:22-alpine AS runtime
-RUN corepack enable && corepack prepare pnpm@9.15.9 --activate
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PERSISTENCE=prisma

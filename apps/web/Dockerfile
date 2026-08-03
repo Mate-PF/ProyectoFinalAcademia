@@ -32,9 +32,10 @@ ARG VITE_API_URL=""
 ENV VITE_API_URL=$VITE_API_URL
 RUN pnpm --filter @proyecto/web build
 
-# ---- runtime: nginx sirve los estáticos + reverse proxy ----
-FROM nginx:1.27-alpine AS runtime
+# ---- runtime: nginx (no-root) sirve los estáticos + reverse proxy ----
+# nginx-unprivileged corre como usuario sin privilegios (uid 101) y escucha en 8080.
+FROM nginxinc/nginx-unprivileged:1.27-alpine AS runtime
 COPY apps/web/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/apps/web/dist /usr/share/nginx/html
-EXPOSE 80
+EXPOSE 8080
 # La imagen oficial de nginx ya corre en foreground (no hace falta CMD).

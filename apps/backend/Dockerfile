@@ -40,12 +40,16 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PERSISTENCE=prisma
 
-# Copiamos el /app ya instalado y generado desde la etapa de build.
-COPY --from=build /app ./
+# Copiamos el /app ya instalado y generado, con ownership del usuario no-root `node`
+# (--chown evita una capa extra de chown sobre node_modules).
+COPY --chown=node:node --from=build /app ./
 
 # Entrypoint: aplica migraciones y arranca el server.
 COPY apps/backend/docker-entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Hardening: correr como usuario sin privilegios. node:alpine ya trae `node` (uid 1000).
+USER node
 
 EXPOSE 3000
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

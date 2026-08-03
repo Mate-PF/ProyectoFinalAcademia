@@ -12,17 +12,23 @@ const PERSISTENCE = process.env.PERSISTENCE ?? "memory";
  * eso los adaptadores Prisma quedan fuera del `tsc` por defecto): solo se toca
  * el cliente generado si realmente se usa PERSISTENCE=prisma.
  */
+let checkReadiness: (() => Promise<void>) | undefined;
+
 async function resolveRepositories(): Promise<Repositories> {
   if (PERSISTENCE === "prisma") {
     const modulePath = "./adapters/prisma/index.js";
-    const mod = (await import(modulePath)) as { buildPrismaRepositories: () => Repositories };
+    const mod = (await import(modulePath)) as {
+      buildPrismaRepositories: () => Repositories;
+      pingDatabase: () => Promise<void>;
+    };
+    checkReadiness = mod.pingDatabase;
     return mod.buildPrismaRepositories();
   }
   return buildInMemoryRepositories();
 }
 
 const repositories = await resolveRepositories();
-const app = createApp(buildContainer({ ...repositories, jwtSecret: JWT_SECRET }));
+const app = createApp(buildContainer({ ...repositories, jwtSecret: JWT_SECRET }), { checkReadiness });
 
 app.listen(PORT, () => {
   console.log(`Backend (persistencia: ${PERSISTENCE}) escuchando en http://localhost:${PORT}`);

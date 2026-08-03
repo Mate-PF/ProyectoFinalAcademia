@@ -103,13 +103,25 @@ La app queda en **http://localhost:8080**.
 
 | Servicio   | Imagen                          | Puerto (host) | Rol |
 |------------|---------------------------------|---------------|-----|
-| `db`       | `postgres:16-alpine`            | `5432` *(opc.)* | Base de datos, con volumen persistente `pgdata` y healthcheck (`pg_isready`). |
-| `backend`  | build `apps/backend/Dockerfile` | `3000` *(opc.)* | Express + Prisma. En el arranque corre `prisma migrate deploy` y sirve con `PERSISTENCE=prisma`. |
-| `frontend` | build `apps/web/Dockerfile`     | `8080`        | nginx que sirve el SPA compilado **y** hace de reverse proxy de `/api`. |
+| `db`       | `postgres:16-alpine`            | — *(interno)* | Base de datos, con volumen persistente `pgdata` y healthcheck (`pg_isready`). |
+| `backend`  | build `apps/backend/Dockerfile` | — *(interno)* | Express + Prisma, **como usuario no-root** (`node`). Corre `prisma migrate deploy` al arrancar y sirve con `PERSISTENCE=prisma`. Healthcheck en `/ready`. |
+| `frontend` | build `apps/web/Dockerfile`     | `8080`        | nginx **no-root** (imagen unprivileged) que sirve el SPA compilado **y** hace de reverse proxy de `/api`. |
+
+Sólo se publica el puerto del **frontend** (`8080`). `db` y `backend` quedan
+accesibles únicamente dentro de la red interna `app-net` (superficie mínima); los
+puertos para debug están comentados en el `docker-compose.yml`.
 
 El arranque respeta el orden con `depends_on` + `condition: service_healthy`:
 **db (sana) → backend (sano) → frontend**. Así el backend no intenta conectarse
 antes de que Postgres acepte conexiones, y nginx no arranca antes que el backend.
+
+### Liveness vs readiness (healthcheck "avanzado")
+
+El backend expone dos endpoints: `/health` (liveness: el proceso está vivo, barato,
+no toca la DB) y `/ready` (readiness: hace un `SELECT 1` real contra Postgres). El
+healthcheck del contenedor usa `/ready`, así que "sano" significa que la app puede
+atender tráfico de verdad — no sólo que el contenedor de Postgres esté arriba, que
+es lo que verificaría un `pg_isready` a secas.
 
 ### Cómo se comunican (y por qué el frontend NO usa `http://backend:3000`)
 
@@ -143,6 +155,13 @@ a `backend:3000`. Un `VITE_API_URL=http://backend:3000` fallaría en el browser.
 - **Imágenes:** `Dockerfile` multi-stage → el frontend termina como un nginx chico
   (sólo estáticos, sin Node). `restart: unless-stopped` para que los servicios se
   recuperen solos.
+- **Hardening:** ambos contenedores corren como **usuario sin privilegios** (backend
+  `node`, frontend `nginx-unprivileged`), nginx con `server_tokens off` y headers de
+  seguridad, `mem_limit` por servicio y `init: true` en el backend (tini como PID 1,
+  para reap de zombies y señales limpias). La superficie de red es mínima: sólo el
+  frontend publica puerto.
+- **Healthchecks:** más allá de `pg_isready`, el backend expone `/ready` con un
+  chequeo real de la DB, integrado como healthcheck del contenedor.
 
 ## Uso de la aplicación
 

@@ -1,0 +1,13 @@
+# Reduce el contexto de build (y evita copiar artefactos del host a las imágenes).
+**/node_modules
+**/dist
+**/coverage
+**/storybook-static
+**/.env
+**/.env.local
+.git
+.gitignore
+*.log
+docs/img
+CONTEXTO_*.md
+BITACORA_*.md

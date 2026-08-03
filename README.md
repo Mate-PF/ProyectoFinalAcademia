@@ -86,6 +86,64 @@ PERSISTENCE=prisma pnpm --filter @proyecto/backend dev
 > uso NO cambian**: solo se enchufa otro adaptador — ese es el pago de la
 > arquitectura limpia.
 
+## Levantar TODO el sistema con un solo comando (Docker Compose)
+
+La sección anterior levanta sólo Postgres (útil para desarrollar el backend en el
+host). Para correr **todo el sistema orquestado** (db + backend + frontend) con un
+único comando:
+
+```bash
+cp .env.example .env        # una sola vez (define credenciales y JWT_SECRET)
+docker compose up --build   # levanta los tres servicios
+```
+
+La app queda en **http://localhost:8080**.
+
+### Qué hace cada servicio
+
+| Servicio   | Imagen                          | Puerto (host) | Rol |
+|------------|---------------------------------|---------------|-----|
+| `db`       | `postgres:16-alpine`            | `5432` *(opc.)* | Base de datos, con volumen persistente `pgdata` y healthcheck (`pg_isready`). |
+| `backend`  | build `apps/backend/Dockerfile` | `3000` *(opc.)* | Express + Prisma. En el arranque corre `prisma migrate deploy` y sirve con `PERSISTENCE=prisma`. |
+| `frontend` | build `apps/web/Dockerfile`     | `8080`        | nginx que sirve el SPA compilado **y** hace de reverse proxy de `/api`. |
+
+El arranque respeta el orden con `depends_on` + `condition: service_healthy`:
+**db (sana) → backend (sano) → frontend**. Así el backend no intenta conectarse
+antes de que Postgres acepte conexiones, y nginx no arranca antes que el backend.
+
+### Cómo se comunican (y por qué el frontend NO usa `http://backend:3000`)
+
+```
+navegador  ──HTTP :8080──▶  nginx (frontend)
+                              ├─ /            → sirve el SPA (index.html)
+                              └─ /api/…       → proxy_pass ▶ backend:3000  ──▶  db:5432
+```
+
+El SPA se compila con `VITE_API_URL=""`, así que el cliente pega a rutas
+**relativas** (`/api/…`). Esto es clave: las peticiones las hace el **navegador**,
+que corre en tu máquina y **no** puede resolver el nombre `backend` (ese nombre
+sólo existe dentro de la red de Docker). Por eso el frontend habla siempre con
+nginx (mismo origen) y es **nginx** —que sí está en la red interna— el que reenvía
+a `backend:3000`. Un `VITE_API_URL=http://backend:3000` fallaría en el browser.
+
+### Para hostear esto en un servidor
+
+- **Reverse proxy:** ya lo tenemos. nginx es la única puerta de entrada: expone un
+  puerto, sirve los estáticos y enruta `/api` al backend. En un server sería el
+  lugar natural para terminar TLS, cachear estáticos y balancear.
+- **Dominio + HTTPS:** apuntás un dominio (registro A) a la IP del server y sacás un
+  certificado gratis con **Let's Encrypt** (p. ej. `certbot`). En Compose se suele
+  sumar un contenedor de certbot que renueva el cert en un volumen compartido, y
+  nginx escucha en `443` con `ssl_certificate`. El `X-Forwarded-Proto` que ya
+  mandamos ayuda al backend a saber que el tráfico original era https.
+- **Secretos:** acá van en `.env` (fuera del `docker-compose.yml`, y `.env` está
+  ignorado por git). En producción se reemplaza por variables del entorno del server
+  o un gestor de secretos (Docker/Swarm secrets, Vault, las variables del proveedor).
+  Nada de credenciales hardcodeadas ni commiteadas.
+- **Imágenes:** `Dockerfile` multi-stage → el frontend termina como un nginx chico
+  (sólo estáticos, sin Node). `restart: unless-stopped` para que los servicios se
+  recuperen solos.
+
 ## Uso de la aplicación
 
 Levantar en dos terminales:

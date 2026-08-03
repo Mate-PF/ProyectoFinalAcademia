@@ -8,6 +8,7 @@
     "dev:prisma": "PERSISTENCE=prisma tsx watch src/main.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy",
     "prisma:studio": "prisma studio",
     "start": "tsx src/main.ts",
     "start:prisma": "PERSISTENCE=prisma tsx src/main.ts",

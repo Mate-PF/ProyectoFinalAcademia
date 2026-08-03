@@ -1,23 +1,82 @@
-# Postgres para desarrollo/entrega. Levantar con: docker compose up -d
-# El backend se conecta vía DATABASE_URL (ver apps/backend/.env.example).
+# Orquesta TODO el sistema con un solo comando:
+#
+#   cp .env.example .env      # una vez
+#   docker compose up --build
+#
+# Levanta: db (Postgres) → backend (Express+Prisma) → frontend (nginx que sirve
+# el SPA y hace de reverse proxy de /api). La app queda en http://localhost:8080
+name: pedidos
+
 services:
   db:
     image: postgres:16-alpine
     container_name: pedidos-db
     restart: unless-stopped
+    env_file: .env
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: pedidos
-    ports:
-      - "5432:5432"
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - app-net
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d pedidos"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 5
+    # Publicar 5432 es OPCIONAL (para psql/Prisma Studio desde el host).
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    container_name: pedidos-backend
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      PERSISTENCE: prisma
+      PORT: "3000"
+      # host = "db" (nombre del servicio, resuelto por el DNS interno de Compose).
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?schema=public
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      db:
+        condition: service_healthy   # evita el race: espera a que Postgres acepte conexiones
+    networks:
+      - app-net
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s              # margen para migrate deploy + arranque
+    # Publicar 3000 es OPCIONAL (debug directo del backend sin pasar por nginx).
+    ports:
+      - "3000:3000"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+      args:
+        VITE_API_URL: ""             # relativo → el browser pega a /api y nginx proxea
+    container_name: pedidos-frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - app-net
+    ports:
+      - "8080:80"                    # la app: http://localhost:8080
 
 volumes:
   pgdata:
+
+networks:
+  app-net:
+    driver: bridge

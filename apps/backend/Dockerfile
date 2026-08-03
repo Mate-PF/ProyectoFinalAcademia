@@ -22,6 +22,9 @@ COPY apps/web/package.json apps/web/
 # 2) Instala SOLO el backend y sus deps del workspace (incluye @proyecto/domain).
 RUN pnpm install --filter @proyecto/backend... --frozen-lockfile
 
+# tsconfig base de la raíz: backend/ y domain/ hacen extends de él (lo lee tsx).
+COPY tsconfig.base.json tsconfig.json ./
+
 # 3) Código fuente (domain como source: el backend lo importa vía tsx).
 COPY domain/ domain/
 COPY apps/backend/ apps/backend/

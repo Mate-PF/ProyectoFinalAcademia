@@ -21,6 +21,8 @@ COPY apps/web/package.json apps/web/
 # Sólo las deps del front.
 RUN pnpm install --filter @proyecto/web... --frozen-lockfile
 
+# tsconfig base de la raíz: apps/web/tsconfig.json hace extends de ../../tsconfig.base.json.
+COPY tsconfig.base.json tsconfig.json ./
 COPY apps/web/ apps/web/
 
 # URL de la API RELATIVA: el navegador pega a /api (mismo origen que nginx) y
